@@ -28,3 +28,11 @@ INTO TABLE artists_table;
 select distinct mbid from artist_table
 where scrobbles_lastfm in (select max(scrobbles_lastfm) from artist_table)
 ```
+2) Самый популярный тэг на ластфм
+```
+select tag, count(tag) as tag_cnt from 
+artist_table lateral view explode(split(tags_lastfm, "; ")) tag_table as tag
+where tag != ''
+group by tag
+order by tag_cnt desc limit 1
+```
