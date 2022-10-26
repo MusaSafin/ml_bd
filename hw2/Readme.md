@@ -36,3 +36,39 @@ where tag != ''
 group by tag
 order by tag_cnt desc limit 1
 ```
+
+3) Самые популярные исполнители 10 самых популярных тегов ластфм
+```
+with tags_table as (
+select artist_lastfm, listeners_lastfm, tag
+from artist_table lateral view explode(split(tags_lastfm, '; ')) tags as tag
+),
+top_tags_table as (
+select tag, count(tag) as cnt
+from tags_table
+where tag != ''
+group by tag
+order by cnt desc
+limit 10
+), 
+result_table as (
+select distinct artist_lastfm, listeners_lastfm
+from tags_table
+where tag in (
+select tag from top_tags_table
+)
+order by listeners_lastfm desc
+)
+select artist_lastfm, listeners_lastfm 
+from result_table
+limit 10
+```
+4) Самые популярные теги в россии
+```
+select tag, count(tag) as tag_cnt from 
+artist_table lateral view explode(split(tags_lastfm, "; ")) tag_table as tag
+where tag != '' and country_lastfm == 'Russia'
+group by tag
+order by tag_cnt desc 
+limit 30
+```
