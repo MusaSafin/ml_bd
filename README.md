@@ -1,2 +1,2 @@
 # ml_bd
-machine learning on big data course assignments
+Machine learning on big data course homework solutions
